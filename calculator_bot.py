@@ -1,5 +1,4 @@
 import logging
-from Seminar7.Seminar7.check import rational_two_no_zero
 import check as ch
 from config import TOKEN
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
@@ -54,6 +53,7 @@ def rational_one(update, context):
     logger.info("Кол-во конфет: %s: %s", user.first_name, update.message.text)
     get_rational = update.message.text
     if ch.get_number_float(get_rational):
+        get_rational = float(get_rational)
         context.user_data['rational_one'] = get_rational
         update.message.reply_text(
             'Введите второе рациональное')
@@ -69,13 +69,14 @@ def rational_two(update, context):
     logger.info("Кол-во конфет: %s: %s", user.first_name, update.message.text)
     get_rational = update.message.text
     if ch.get_number_float(get_rational):
+        get_rational = float(get_rational)
         context.user_data['rational_two'] = get_rational
         update.message.reply_text(
             'Выберите операцию с цислами: \n\n+ - для сложения: \n- - для вычетания: \n* - для умножения: \n/ - для деления: \n')
         return OPERATIONS_RATIONAL
     else:    
         update.message.reply_text(
-                'Вы ввели не то или делите на 0')
+                'Вы ввели не то')
 
 
 def operatons_rational(update, context):
@@ -93,18 +94,13 @@ def operatons_rational(update, context):
         if user_choice == '*':
             result = rational_one * rational_two
         if user_choice == '/':
-            if rational_two_no_zero(rational_two):
-                result = rational_one / rational_two
-                update.message.reply_text(
-                    f'Результат: {rational_one} + {rational_two} = {result}')
-            else:
-                update.message.reply_text(
-                'На ноль делить нельзя')
-        return ConversationHandler.END
+            result = rational_one / rational_two
+            update.message.reply_text(
+                f'Результат: {rational_one} + {rational_two} = {result}')
+            return ConversationHandler.END
     else:
         update.message.reply_text(
-                'Вы ввели не то')        
-
+                'Вы ввели не то или делите на ноль')        
 
 def complex_one(update, context):
     user = update.message.from_user
@@ -137,7 +133,7 @@ def complex_two(update, context):
         return OPERATIONS_COMPLEX
     else:
         update.message.reply_text(
-                'Вы ввели не то или делите на 0')
+                'Вы ввели не то')
 
 
 def operatons_complex(update, context):
@@ -155,13 +151,13 @@ def operatons_complex(update, context):
         if user_choice == '*':
             result = complex_one * complex_two
         if user_choice == '/':
-                result = complex_one / complex_two
-        update.message.reply_text(
-            f'Результат: {complex_one} + {complex_two} = {result}')
+            result = complex_one / complex_two
+            update.message.reply_text(
+                f'Результат: {complex_one} + {complex_two} = {result}')
         return ConversationHandler.END
     else:
         update.message.reply_text(
-                'Вы ввели не то') 
+                'Вы ввели не то или делите на ноль') 
 
 
 def cancel(update, _):
